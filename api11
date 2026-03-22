@@ -50,7 +50,7 @@ try:
             controller.check_system(temp)
         else:
             print("Error")
-        # Wait for 10 seconds before checking again (Heartbeat)
+        
         time.sleep(10) 
 except KeyboardInterrupt:
     print("\nAutomation stopped by user.")
