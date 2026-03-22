@@ -1,0 +1,57 @@
+import time
+import requests
+class Sequrity_System:
+    def __init__(self, key):
+        self.key = key
+        self.password_is_correct = False
+    def check_password(self, current_password):
+        if current_password == self.key:
+            print(f"Password is correct")
+            self.password_is_correct = True
+        else:
+            print(f"Password is not correct")
+            self.password_is_correct = False
+class CoolingSystem(Sequrity_System):
+    def __init__(self,threshold,key):
+        super().__init__(key)
+        self.threshold = threshold
+        self.is_system_active = False
+    def check_system(self, current_temp):
+        if self.password_is_correct:
+            if current_temp > self.threshold:
+                if not self.is_system_active:
+                    self.is_system_active = True
+                    print(f"System started cooling")
+                    print(f"Current temp is : {current_temp}, system has to decrease {abs(self.threshold - current_temp)} degrees to disactive system")
+            else:
+                if self.is_system_active:
+                    print(f"System is not cooling")
+                    print(f"Current temp is : {current_temp}, is {(self.threshold - current_temp)} to active system")
+                    self.is_system_active = False
+                else:
+                    print(f"REPORT")
+        else:
+            print("System Inactive: Please authenticate first.")
+controller = CoolingSystem(threshold=2.0, key="Pass") # Set limit to 20 degrees
+user_key = input("Write password: ")
+controller.check_password(user_key)
+
+api_url = "https://api.open-meteo.com/v1/forecast?latitude=53.12&longitude=18.00&current_weather=true"
+
+
+try:
+    while True:
+        print("\n--- Connecting to Server... ---")
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            data = response.json()
+            temp = data['current_weather']['temperature']
+            
+            controller.check_system(temp)
+        else:
+            print("Error")
+        # Wait for 10 seconds before checking again (Heartbeat)
+        time.sleep(10) 
+except KeyboardInterrupt:
+    print("\nAutomation stopped by user.")
+
