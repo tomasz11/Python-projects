@@ -32,7 +32,7 @@ class CoolingSystem(Sequrity_System):
                     print(f"REPORT")
         else:
             print("System Inactive: Please authenticate first.")
-controller = CoolingSystem(threshold=2.0, key="Pass") # Set limit to 20 degrees
+controller = CoolingSystem(threshold=2.0, key="Pass")
 user_key = input("Write password: ")
 controller.check_password(user_key)
 
