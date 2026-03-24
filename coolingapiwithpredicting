@@ -1,0 +1,57 @@
+import time
+
+class Device:
+    def __init__(self,name):
+        self.name=name
+        self.status = False
+class SecureController(Device):
+    def __init__(self, name, password):
+        super().__init__(name)
+        self.is_correct_password = False
+        self.password = password
+    def autorization(self,key):
+        if self.password == key:
+            print(f"Correct password")
+            self.is_correct_password = True
+
+        else:
+            print(f"Wrong password")
+            self.is_correct_password = False
+class CimateAI(SecureController):
+    def __init__(self, name, password,max_temperature):
+        super().__init__(name, password)
+        self.max_temperature = max_temperature
+        self.data_set = []
+    def logic_function(self,current_temp):
+        
+        if self.is_correct_password == True:
+            self.data_set.append(current_temp)
+            if len(self.data_set) > 5:
+                self.data_set.pop(0)
+            if len(self.data_set) > 1:
+                trend = (self.data_set[-1] - self.data_set[0]) / len(self.data_set)
+                fun = self.data_set[-1] + trend
+                threshold1 = self.max_temperature
+                threshold2 = 18
+                if not self.status and fun > threshold1:
+                    
+                    print(f"System is cooling ")
+                    self.status = True
+                    
+                elif self.status and fun <= threshold2:
+                     print(f"System has been stopped cooling")
+                     self.status = False    
+                else :
+                    actual = "cooling" if self.status else "not cooling"
+                    print(f"System is {actual}, actual temperature is {current_temp}, predicted temp is {fun}")     
+        else:
+            print(f"if You want acess write correct password")
+example_temps = [18.1,18.2,18.5,18.9,19.3,19.8,20.2,20.7,21.1,21.6,22.1,22.5,22.8,22.4,21.8,21.1,20.3,19.5,18.8,18.2,17.7,17.9,18.1,18.3]
+test = CimateAI("Room1", "Password", 20)
+test.autorization("Password")
+for g in example_temps:
+    test.logic_function(g)
+    time.sleep(1)
+    
+
+
